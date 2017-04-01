@@ -55,6 +55,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
     static {
-        System.loadLibrary("photoshop");
+        System.loadLibrary("ephotoshop");
     }
 }
