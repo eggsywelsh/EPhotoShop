@@ -61,4 +61,43 @@ public class NativeProcessor {
      */
     public static native int[] applyFastBlur(int[] pixels, int width, int height,int radius);
 
+    /**
+     * 怀旧
+     * @param pixels
+     * @param width
+     * @param height
+     * @return
+     */
+    public static native int[] applyNostalgic(int[] pixels, int width, int height);
+
+
+    /**
+     * 对比度
+     * @param pixels
+     * @param width
+     * @param height
+     * @return
+     */
+    public static native int[] applyContrast(int[] pixels, int width, int height,float contrast);
+
+    /**
+     * 亮度
+     * @param pixels
+     * @param width
+     * @param height
+     * @param brightness
+     * @return
+     */
+    public static native int[] applyBrightness(int[] pixels, int width, int height,float brightness);
+
+    /**
+     * 饱和度
+     * @param pixels
+     * @param width
+     * @param height
+     * @param level
+     * @return
+     */
+    public static native int[] applySaturation(int[] pixels, int width, int height,float level);
+
 }
