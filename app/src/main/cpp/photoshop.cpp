@@ -464,7 +464,7 @@ Java_com_eggsy_photoshop_NativeProcessor_applyBrightness(JNIEnv *env, jclass typ
 
     int a, r, g, b;
 
-    for (int i = 0; i < width * height; i++) {
+g    for (int i = 0; i < width * height; i++) {
         a = alpha(pixels[i]);
         r = red(pixels[i]);
         g = green(pixels[i]);

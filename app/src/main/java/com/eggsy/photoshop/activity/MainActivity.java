@@ -38,7 +38,7 @@ public class MainActivity extends AppCompatActivity implements SeekBar.OnSeekBar
     int mContrastValue = 0;
     int mBlurValue = 0;
     int mSaturationValue = 0;
-    int mBrightnessValue = 0;
+    int mBrightnessValue = -1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -111,7 +111,7 @@ public class MainActivity extends AppCompatActivity implements SeekBar.OnSeekBar
         Bitmap newBitMap = srcBitmap.copy(srcBitmap.getConfig(), true);
         EPhotoShop.doFastBlur(newBitMap, mBlurValue);
         mIvImg.setImageBitmap(newBitMap);
-        showSeekBar(mBlurValue);
+        showSeekBar(mBlurValue, 30);
     }
 
     @OnClick(R.id.btn_contrast)
@@ -120,16 +120,16 @@ public class MainActivity extends AppCompatActivity implements SeekBar.OnSeekBar
         Bitmap newBitMap = srcBitmap.copy(srcBitmap.getConfig(), true);
         EPhotoShop.doContrast(newBitMap, mContrastValue);
         mIvImg.setImageBitmap(newBitMap);
-        showSeekBar(mContrastValue);
+        showSeekBar(mContrastValue, 30);
     }
 
     @OnClick(R.id.btn_brightness)
     public void clickBrightness(View v) {
         mod = MOD_BRIGHTNESS;
         Bitmap newBitMap = srcBitmap.copy(srcBitmap.getConfig(), true);
-        EPhotoShop.doBrightness(newBitMap, mBrightnessValue);
+        EPhotoShop.doBrightness(newBitMap, fixNativeBrightness(mBrightnessValue));
         mIvImg.setImageBitmap(newBitMap);
-        showSeekBar(mBrightnessValue);
+        showSeekBar(fixSeekbarBrightness(mBrightnessValue), 511);
     }
 
     @OnClick(R.id.btn_saturation)
@@ -138,7 +138,7 @@ public class MainActivity extends AppCompatActivity implements SeekBar.OnSeekBar
         Bitmap newBitMap = srcBitmap.copy(srcBitmap.getConfig(), true);
         EPhotoShop.doSaturation(newBitMap, mSaturationValue);
         mIvImg.setImageBitmap(newBitMap);
-        showSeekBar(mSaturationValue);
+        showSeekBar(mSaturationValue, 30);
     }
 
     @OnClick(R.id.btn_nostalgic)
@@ -155,7 +155,10 @@ public class MainActivity extends AppCompatActivity implements SeekBar.OnSeekBar
 
     @Override
     public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-        switch (mod){
+        if (!fromUser) {
+            return;
+        }
+        switch (mod) {
             case MOD_BLUR:
                 mBlurValue = progress;
                 Bitmap blurBitMap = srcBitmap.copy(srcBitmap.getConfig(), true);
@@ -165,7 +168,7 @@ public class MainActivity extends AppCompatActivity implements SeekBar.OnSeekBar
             case MOD_BRIGHTNESS:
                 mBrightnessValue = progress;
                 Bitmap brightnessBitMap = srcBitmap.copy(srcBitmap.getConfig(), true);
-                EPhotoShop.doBrightness(brightnessBitMap, progress);
+                EPhotoShop.doBrightness(brightnessBitMap, fixNativeBrightness(mBrightnessValue));
                 mIvImg.setImageBitmap(brightnessBitMap);
                 break;
             case MOD_CONTRAST:
@@ -193,12 +196,21 @@ public class MainActivity extends AppCompatActivity implements SeekBar.OnSeekBar
 
     }
 
-    private void showSeekBar(int value) {
+    private void showSeekBar(int value, int maxValue) {  // ,float minValue,int maxValue
         Animation animation = AnimationUtils.loadAnimation(this, R.anim.bottom_popup);
         mSbBlurRadius.setAnimation(animation);
         mSbBlurRadius.setVisibility(View.VISIBLE);
+        mSbBlurRadius.setMax(maxValue);
         mSbBlurRadius.setProgress(value);
         animation.start();
+    }
+
+    private int fixSeekbarBrightness(int seekbarBrightnessValuess) {
+        return mBrightnessValue < 0 ? 256 : mBrightnessValue;
+    }
+
+    private int fixNativeBrightness(int seekbarBrightnessValuess) {
+        return seekbarBrightnessValuess < 0 ? 0 : seekbarBrightnessValuess - 256;
     }
 
     private void hideSeekBar() {
