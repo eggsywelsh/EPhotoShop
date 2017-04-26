@@ -144,7 +144,7 @@ public class EPhotoShop {
         return outputImage;
     }
 
-    public static Bitmap doSaturation(Bitmap inputBitmap, int level) {
+    public static Bitmap doSaturation(Bitmap inputBitmap, float level) {
         Bitmap outputImage = inputBitmap;
 
         int width = inputBitmap.getWidth();
