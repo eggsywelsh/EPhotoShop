@@ -3,7 +3,6 @@
 
 extern "C" {
 
-#include "filter.h"
 #include "android_log.h"
 #include <math.h>
 #include <stdlib.h>
@@ -44,19 +43,6 @@ HSLtoRGB_Subfunction(unsigned int &c, const float &temp1, const float &temp2, co
         c = (unsigned int) (temp2 * 100);
     return;
 }
-
-/*JNIEXPORT jstring JNICALL Java_com_eggsy_photoshop_MainActivity_stringFromJNI(
-        JNIEnv *env,
-        jobject *//* this *//*) {
-    std::string hello = "Hello from C++";
-    return env->NewStringUTF(hello.c_str());
-}
-
-JNIEXPORT jstring JNICALL
-Java_com_eggsy_photoshop_MainActivity_test(JNIEnv *env, jobject instance) {
-    std::string test = "test from C++";
-    return env->NewStringUTF(test.c_str());
-}*/
 
 JNIEXPORT jintArray JNICALL
 Java_com_eggsy_photoshop_NativeProcessor_applyGray(JNIEnv *env, jclass type,
@@ -464,7 +450,7 @@ Java_com_eggsy_photoshop_NativeProcessor_applyBrightness(JNIEnv *env, jclass typ
 
     int a, r, g, b;
 
-g    for (int i = 0; i < width * height; i++) {
+    for (int i = 0; i < width * height; i++) {
         a = alpha(pixels[i]);
         r = red(pixels[i]);
         g = green(pixels[i]);
