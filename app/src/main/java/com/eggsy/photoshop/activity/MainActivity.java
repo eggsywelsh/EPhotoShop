@@ -3,6 +3,7 @@ package com.eggsy.photoshop.activity;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
@@ -29,13 +30,15 @@ public class MainActivity extends AppCompatActivity implements SeekBar.OnSeekBar
 
     Bitmap srcBitmap;
 
+    private static final String TAG = MainActivity.class.getSimpleName();
+
     private static final int MOD_CONTRAST = 1;
     private static final int MOD_BRIGHTNESS = 2;
     private static final int MOD_SATURATION = 3;
     private static final int MOD_BLUR = 4;
 
     int mod = 0;
-    int mContrastValue = 0;
+    int mContrastValue = 20;
     int mBlurValue = 0;
     int mSaturationValue = 0;
     int mBrightnessValue = -1;
@@ -118,9 +121,9 @@ public class MainActivity extends AppCompatActivity implements SeekBar.OnSeekBar
     public void clickContrast(View v) {
         mod = MOD_CONTRAST;
         Bitmap newBitMap = srcBitmap.copy(srcBitmap.getConfig(), true);
-        EPhotoShop.doContrast(newBitMap, mContrastValue);
+        EPhotoShop.doContrast(newBitMap, fixNativeContrast(mContrastValue));
         mIvImg.setImageBitmap(newBitMap);
-        showSeekBar(mContrastValue, 30);
+        showSeekBar(mContrastValue, 100);
     }
 
     @OnClick(R.id.btn_brightness)
@@ -136,9 +139,9 @@ public class MainActivity extends AppCompatActivity implements SeekBar.OnSeekBar
     public void clickSaturation(View v) {
         mod = MOD_SATURATION;
         Bitmap newBitMap = srcBitmap.copy(srcBitmap.getConfig(), true);
-        EPhotoShop.doSaturation(newBitMap, mSaturationValue);
+        EPhotoShop.doSaturation(newBitMap, fixNativeSaturation(mSaturationValue));
         mIvImg.setImageBitmap(newBitMap);
-        showSeekBar(mSaturationValue, 30);
+        showSeekBar(mSaturationValue, 100);
     }
 
     @OnClick(R.id.btn_nostalgic)
@@ -158,6 +161,7 @@ public class MainActivity extends AppCompatActivity implements SeekBar.OnSeekBar
         if (!fromUser) {
             return;
         }
+        Log.d(TAG, "process : "+progress);
         switch (mod) {
             case MOD_BLUR:
                 mBlurValue = progress;
@@ -174,13 +178,13 @@ public class MainActivity extends AppCompatActivity implements SeekBar.OnSeekBar
             case MOD_CONTRAST:
                 mContrastValue = progress;
                 Bitmap contrastBitMap = srcBitmap.copy(srcBitmap.getConfig(), true);
-                EPhotoShop.doContrast(contrastBitMap, progress);
+                EPhotoShop.doContrast(contrastBitMap, fixNativeContrast(progress));
                 mIvImg.setImageBitmap(contrastBitMap);
                 break;
             case MOD_SATURATION:
                 mSaturationValue = progress;
                 Bitmap saturationBitMap = srcBitmap.copy(srcBitmap.getConfig(), true);
-                EPhotoShop.doSaturation(saturationBitMap, progress);
+                EPhotoShop.doSaturation(saturationBitMap, fixNativeSaturation(mSaturationValue));
                 mIvImg.setImageBitmap(saturationBitMap);
                 break;
         }
@@ -205,12 +209,20 @@ public class MainActivity extends AppCompatActivity implements SeekBar.OnSeekBar
         animation.start();
     }
 
-    private int fixSeekbarBrightness(int seekbarBrightnessValuess) {
-        return mBrightnessValue < 0 ? 256 : mBrightnessValue;
+    private float fixNativeSaturation(int saturationValue){
+        return (float)saturationValue/40;
     }
 
-    private int fixNativeBrightness(int seekbarBrightnessValuess) {
-        return seekbarBrightnessValuess < 0 ? 0 : seekbarBrightnessValuess - 256;
+    private int fixSeekbarBrightness(int seekbarBrightnessValue) {
+        return seekbarBrightnessValue < 0 ? 256 : seekbarBrightnessValue;
+    }
+
+    private int fixNativeBrightness(int seekbarBrightnessValue) {
+        return seekbarBrightnessValue < 0 ? 0 : seekbarBrightnessValue - 256;
+    }
+
+    private float fixNativeContrast(int seekbarContrastValue) {
+        return (float)seekbarContrastValue/20;
     }
 
     private void hideSeekBar() {
